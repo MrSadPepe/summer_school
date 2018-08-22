@@ -1,0 +1,55 @@
+pragma experimental ABIEncoderV2;
+import "github.com/willitscale/solidity-util/lib/Integers.sol";
+
+contract Voting{
+    using Integers for uint;
+    address owner;
+    uint[] projectos;
+    string[] projectings;
+    uint8 lastID=1;
+    uint8 thisID=0;
+    struct Ballot{
+        address owner;
+        string newBallot;
+        uint startTime;
+        uint finishTime;
+    }
+    function Voting(){
+        owner=msg.sender;
+    }
+    uint begin;
+    uint end;
+    string[] results;
+    mapping(string=>uint8)voters;
+    mapping(uint=>uint)projects;
+    function showVotes(uint projectID) public returns(uint, uint){
+        return (projectID,projects[projectID]);
+    }
+    function showresults() returns(string[]){
+        for(uint i=1;i<16;i++){
+            results.push(Integers.toString(i));
+            results.push(Integers.toString(projects[i]));
+        }
+        return results;
+    }
+    function time(uint newFinishTime) private returns(uint, uint){
+        begin=block.timestamp;
+        end=block.timestamp+newFinishTime;
+        return(begin,end);
+    }
+    function newBallot(string newName, uint newFinishTime){
+        time(newFinishTime);
+        Ballot(msg.sender,newName, begin,end);
+    }
+    function addProject(string projectName){
+        thisID=lastID++;
+        projectings.push(projectName);
+    }
+    function addVote(string Name, uint8 projectID){
+        require(block.timestamp<end);
+        require(voters[Name]==0, "You have already voted.");
+        require(projectID>=0&&projectID<lastID);
+        projects[projectID]++;
+        voters[Name]=projectID;
+    }
+}

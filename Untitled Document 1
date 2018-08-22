@@ -1,0 +1,46 @@
+contract Bank{
+    struct Depositor{
+        address depOwner;
+        string name;
+        uint8 age;
+        uint256 balance;
+    }
+    uint lastDepositorID = 0;
+    mapping (uint=>Depositor) depositors;
+    
+    function ifIDExist(int ID) public returns (bool) {
+        bool accessGranted;
+        if(ID > int(lastDepositorID) || ID < 0) 
+        {
+            accessGranted = false;
+        } else {
+            accessGranted = true;
+        }
+        return accessGranted;
+    }
+    
+    function addDepositor(address newDepOwner, string newName, uint8 newAge) public {
+        uint256 thisID = lastDepositorID++;
+        depositors[thisID] = Depositor(newDepOwner, newName, newAge, 0);
+    }
+    
+    function showBalance(int ID) public returns(uint){
+        if(ifIDExist(ID) == false) {
+            throw;
+        }
+        return depositors[uint(ID)].balance;
+    }
+    
+    function addBalance(int ID,uint sum) {
+        if(ifIDExist(ID) == false) {
+            throw;
+        }
+        depositors[uint(ID)].balance += sum;
+    }
+    function withdrawBalance(int ID,uint unsum) {
+        if(ifIDExist(ID) == false || (depositors[uint(ID)].balance - unsum)<0) {
+            throw;
+        }
+        depositors[uint(ID)].balance -= unsum;
+    }
+}

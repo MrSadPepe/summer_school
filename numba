@@ -1,0 +1,7 @@
+pragma solidity ^0.4.24;
+contract Conuturactu{
+    uint numba=9;
+    function getNumber() view public returns(uint){
+        return numba;
+    }
+}

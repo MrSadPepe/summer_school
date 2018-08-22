@@ -1,0 +1,20 @@
+contract concert{
+    address owner;
+    uint tickets=1000;
+    mapping(address=>uint)people;
+    uint constant price=1 ether;
+    function concert(){
+        owner=msg.sender;
+    }
+    function buyTickets(uint count) public payable{
+        require((tickets-count)>=0&&(price*count)==msg.value, "Can't buy tickets");
+        people[msg.sender]=count;
+        if (tickets-count==0){
+            selfdestruct(owner);
+        }
+    }
+    function()payable{
+        require((tickets-1)>=0&&(price*1)==msg.value, "Can't buy tickets");
+        people[msg.sender]=1;
+    }
+}

@@ -1,0 +1,9 @@
+pragma solidity ^0.4.24;
+contract mod{
+    address owner = msg.sender;
+    uint value=0;
+    modifier onlyOwner{
+        require(msg.sender==owner);
+        _;    
+    }
+}

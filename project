@@ -1,0 +1,60 @@
+pragma solidity ^0.4.24;
+
+contract Voting{
+    address owner;
+    function Voting(){
+        owner=msg.sender;
+    }
+    struct Voter{
+        string name;
+        bool voteFactor;
+    }
+    struct Project{
+        string projectName;
+        uint votes;
+    }
+    uint lastVoterID = 0;
+    uint lastProjectID = 0;
+    mapping (uint=>Voter) voters;
+    mapping (uint=>Project) projects;
+    /*function ifIDExist(int ID) public returns (bool) {
+        bool accessGranted;
+        if((ID > int(lastVoterID) || ID < 0) || voters[uint(ID)].voteFactor==true) 
+        {
+            accessGranted = false;
+        } else {
+            accessGranted = true;
+        }
+        return accessGranted;
+    }*/
+    
+    function addVoter(string newName) public {
+        uint256 thisID = lastVoterID++;
+        voters[thisID] = Voter(newName, false);
+    }
+    function addProject(string newProjectName) public {
+        uint256 thisID = lastProjectID++;
+        projects[thisID] = Project(newProjectName, 0);
+    }
+    function showVotes(int ID) public returns(string out, uint){
+        return (projects[uint(ID)].projectName, projects[uint(ID)].votes);
+    }
+    function addVote(int ID, int id) {
+        /*if(ifIDExist(ID) == false) {
+            throw;
+        }
+        if(ifIDExist(id) == false) {
+            throw;
+        }*/
+        require((ID > int(lastVoterID) || ID < 0) || voters[uint(ID)].voteFactor==true);
+        projects[uint(id)].votes++;
+        voters[uint(ID)].voteFactor=true;
+    }
+    function showIdOwner(int ID) public returns(string out){
+        /*if(ifIDExist(ID) == false) {
+            throw;
+        }*/
+        require(owner==msg.sender);
+        return (voters[uint(ID)].name);
+    }
+}
